@@ -14,15 +14,15 @@ class InputManager{
     var xButtonPressedInFrame = false
     var zButtonPressedInFrame = false
     
-    func setDirectionalPad(directionalPad: DirectionalPad){
+    func setDirectionalPad(_ directionalPad: DirectionalPad){
         self.directionalPad = directionalPad
     }
     
-    func pushedXButton(button: SgButton){
+    func pushedXButton(_ button: SgButton){
         xButtonPressedInFrame = true
     }
     
-    func pushedZButton(button: SgButton){
+    func pushedZButton(_ button: SgButton){
         zButtonPressedInFrame = true
     }
     
@@ -31,7 +31,7 @@ class InputManager{
             return directionalPad!.direction
         }
         
-        return DirectionalPad.Direction.None
+        return DirectionalPad.Direction.none
     }
     
     func getDpadDirectionVector() -> CGVector{

@@ -20,7 +20,7 @@ class Sword: Weapon{
         self.physicsSize = CGSize(width: 65.0, height: 10.0)
         self.anchorPoint = CGPoint(x: 0,y: 0.5)
         self.zPosition = 0.1
-        hidden = true
+        isHidden = true
 
     }
     
@@ -28,20 +28,20 @@ class Sword: Weapon{
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func attack(direction: DirectionalPad.Direction) {
+    override func attack(_ direction: DirectionalPad.Direction) {
         setUpPhysics()
-        hidden = false
+        isHidden = false
         attacking = true
         var initialAngle:Float = 0.0
         switch direction{
-        case .Up: initialAngle = 90
-        case .Down: initialAngle = 270
-        case .Left: initialAngle = 0 // left and right the same bc scale flips for animation
-        case .Right: initialAngle = 0
-        case .UpLeft: initialAngle = 135
-        case .UpRight: initialAngle = 45
-        case .DownLeft: initialAngle = 225
-        case .DownRight: initialAngle = 315
+        case .up: initialAngle = 90
+        case .down: initialAngle = 270
+        case .left: initialAngle = 0 // left and right the same bc scale flips for animation
+        case .right: initialAngle = 0
+        case .upLeft: initialAngle = 135
+        case .upRight: initialAngle = 45
+        case .downLeft: initialAngle = 225
+        case .downRight: initialAngle = 315
         default: initialAngle = 0
         }
         
@@ -49,10 +49,10 @@ class Sword: Weapon{
         
         self.zRotation = CGFloat(GLKMathDegreesToRadians(initialAngle))
         
-        let action = SKAction.rotateByAngle(CGFloat(GLKMathDegreesToRadians(swingRotation)), duration: totalSwingTime)
-        self.runAction(action, completion: {
+        let action = SKAction.rotate(byAngle: CGFloat(GLKMathDegreesToRadians(swingRotation)), duration: totalSwingTime)
+        self.run(action, completion: {
             self.attacking = false
-            self.hidden = true
+            self.isHidden = true
             self.removePhysics()
         })
 

@@ -14,14 +14,14 @@ class ScreenHelper{
     var viewSize = CGSize()
     var visibleScreen = CGRect()
     
-    func initialize(coordinateSize: CGSize, viewSize: CGSize){
+    func initialize(_ coordinateSize: CGSize, viewSize: CGSize){
         sceneCoordinateSize = coordinateSize
         self.viewSize = viewSize
         visibleScreen = getVisibleScreen(Float(viewSize.width), viewHeight: Float(viewSize.height))
     }
     
     //Returns a CGRect that has the dimensions and position for any device with respect to any specified scene. This will result in a boundary that can be utilised for positioning nodes on a scene so that they are always visible
-    private func getVisibleScreen(viewWidth: Float, viewHeight: Float) -> CGRect {
+    fileprivate func getVisibleScreen(_ viewWidth: Float, viewHeight: Float) -> CGRect {
         var x: Float = 0
         var y: Float = 0
         var sceneWidth = Float(sceneCoordinateSize.width)

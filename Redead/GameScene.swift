@@ -26,21 +26,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let totalRooms = 5
     var isGameOver = false
     
-    private var yCameraAdjust: CGFloat = 0.0
-    private var xCameraAdjust: CGFloat = 0.0
-    private let screenWidth = ScreenHelper.instance.visibleScreen.width
-    private let screenHeight = ScreenHelper.instance.visibleScreen.height
-    private let originX = ScreenHelper.instance.visibleScreen.origin.x
-    private let originY = ScreenHelper.instance.visibleScreen.origin.y
-    private let sceneCoordinatesX = ScreenHelper.instance.sceneCoordinateSize.width
-    private let sceneCoordinatesY = ScreenHelper.instance.sceneCoordinateSize.height
+    fileprivate var yCameraAdjust: CGFloat = 0.0
+    fileprivate var xCameraAdjust: CGFloat = 0.0
+    fileprivate let screenWidth = ScreenHelper.instance.visibleScreen.width
+    fileprivate let screenHeight = ScreenHelper.instance.visibleScreen.height
+    fileprivate let originX = ScreenHelper.instance.visibleScreen.origin.x
+    fileprivate let originY = ScreenHelper.instance.visibleScreen.origin.y
+    fileprivate let sceneCoordinatesX = ScreenHelper.instance.sceneCoordinateSize.width
+    fileprivate let sceneCoordinatesY = ScreenHelper.instance.sceneCoordinateSize.height
     
-    private let sound = Sounds()
-    private var roomCount = 1
+    fileprivate let sound = Sounds()
+    fileprivate var roomCount = 1
     
-    override func didMoveToView(view: SKView) {
-        yCameraAdjust = -CGRectGetMidY(self.frame) + screenHeight/6
-        xCameraAdjust = -CGRectGetMidX(self.frame)
+    override func didMove(to view: SKView) {
+        yCameraAdjust = -self.frame.midY + screenHeight/6
+        xCameraAdjust = -self.frame.midX
         addCameraToScene()
         addPlayerToScene()
         addButtonsToScene()
@@ -51,7 +51,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.camera!.position = CGPoint(x: -xCameraAdjust - screenWidth/9, y: tileMap!.tileSize.height * 2.2)
         
         self.physicsWorld.contactDelegate = self
-        self.physicsWorld.gravity = CGVectorMake(0,0)
+        self.physicsWorld.gravity = CGVector(dx: 0,dy: 0)
         
         gameEndVariables.victory = false
         gameEndVariables.currentTime = ""
@@ -70,7 +70,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func addTimerToScene(){
         timerLabel = SKLabelNode(text: "00:00")
-        timerLabel!.position = CGPointMake(originX + screenWidth * 18/20.0 + xCameraAdjust, originY + screenHeight * 18/20.0 + yCameraAdjust)
+        timerLabel!.position = CGPoint(x: originX + screenWidth * 18/20.0 + xCameraAdjust, y: originY + screenHeight * 18/20.0 + yCameraAdjust)
         timerLabel!.fontName = "AmericanTypewriter-Bold"
         self.camera!.addChild(timerLabel!)
     }
@@ -79,7 +79,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let buttonSize = CGSize(width: screenWidth/9, height: screenWidth/9)
         let zButton = SgButton(normalImageNamed: "Assets/blueButton.png", highlightedImageNamed: "Assets/bluePushed.png", buttonFunc: InputManager.instance.pushedZButton)
         zButton.size = buttonSize
-        zButton.position = CGPointMake(originX + screenWidth * 16/20.0 + xCameraAdjust, originY + screenHeight * 4/16.0 + yCameraAdjust)
+        zButton.position = CGPoint(x: originX + screenWidth * 16/20.0 + xCameraAdjust, y: originY + screenHeight * 4/16.0 + yCameraAdjust)
         zButton.zPosition = 0.2
         
         projectileLabel = SKLabelNode(text: "\(player!.spellCount)")
@@ -90,7 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let xButton = SgButton(normalImageNamed: "Assets/redButton.png", highlightedImageNamed: "Assets/redPushed.png", buttonFunc: InputManager.instance.pushedXButton)
         xButton.size = buttonSize
-        xButton.position = CGPointMake(originX + screenWidth * 18/20.0 + xCameraAdjust, originY + screenHeight * 2/16.0 + yCameraAdjust)
+        xButton.position = CGPoint(x: originX + screenWidth * 18/20.0 + xCameraAdjust, y: originY + screenHeight * 2/16.0 + yCameraAdjust)
         xButton.zPosition = 0.2
         
         self.camera!.addChild(zButton)
@@ -101,13 +101,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         directionalPad = DirectionalPad(imageName: "Assets/flatDark08.png", size: dPadSize)
         
-        directionalPad!.position = CGPointMake(originX + screenWidth * 1/8.0 + xCameraAdjust, originY + screenHeight * 5/22.0 + yCameraAdjust)
+        directionalPad!.position = CGPoint(x: originX + screenWidth * 1/8.0 + xCameraAdjust, y: originY + screenHeight * 5/22.0 + yCameraAdjust)
         self.camera!.addChild(directionalPad!)
         directionalPad!.zPosition = 0.2
         InputManager.instance.setDirectionalPad(directionalPad!)
     }
     
-    func addMapToScene(mapName: String) {
+    func addMapToScene(_ mapName: String) {
         if (tileMap != nil) {
             player!.removeFromParent()
             for enemy in enemiesOnScreen {
@@ -156,24 +156,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         while x <  Int(tileMap!.mapSize.width){
             while y < Int(tileMap!.mapSize.height) {
                 let point = CGPoint(x: x, y: y)
-                let gid = enemyLocLayer.tileGidAt(enemyLocLayer.pointForCoord(point))
+                let gid = enemyLocLayer?.tileGid(at: (enemyLocLayer?.point(forCoord: point))!)
                 if gid != 0 {
                     var enemy: Enemy? = nil
                     if gid == 1 {
-                        enemy = Enemy(level: Difficulty.Boss, thePlayer: player!)
+                        enemy = Enemy(level: Difficulty.boss, thePlayer: player!)
                     }
                     else if gid == 2 {
-                        enemy = Enemy(level: Difficulty.Easy, thePlayer: player!)
+                        enemy = Enemy(level: Difficulty.easy, thePlayer: player!)
                     }
                     else if gid == 3 {
-                        enemy = Enemy(level: Difficulty.Medium, thePlayer: player!)
+                        enemy = Enemy(level: Difficulty.medium, thePlayer: player!)
                     }
                     else if gid == 4 {
-                        enemy = Enemy(level: Difficulty.Hard, thePlayer: player!)
+                        enemy = Enemy(level: Difficulty.hard, thePlayer: player!)
                     }
                     enemiesOnScreen.append(enemy!)
-                    let enemyGridCoord = enemyLocLayer.pointForCoord(point)
-                    enemy!.position = enemyGridCoord
+                    let enemyGridCoord = enemyLocLayer?.point(forCoord: point)
+                    enemy!.position = enemyGridCoord!
                     
                     tileMap!.addChild(enemy!)
                 }
@@ -184,7 +184,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
        
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
         
         //Controls the players movement
@@ -201,8 +201,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             elapsedTime += Float(delta)
-            let seconds = Int(elapsedTime % 60)
-            let minutes = Int((elapsedTime / 60) % 60)
+            let seconds = Int(elapsedTime.truncatingRemainder(dividingBy: 60))
+            let minutes = Int((elapsedTime / 60).truncatingRemainder(dividingBy: 60))
             timerLabel!.text = NSString(format: "%0.2d:%0.2d", minutes, seconds) as String
             
             lastInterval = currentTime
@@ -213,7 +213,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             let layer = tileMap!.layerNamed("MovableMap")
-            let gid = layer.tileGidAt(player!.position)
+            let gid = layer?.tileGid(at: player!.position)
             if gid == 3 {
                 addMapToScene(maps[tileMap!.name!]!)
                 roomCount += 1
@@ -226,18 +226,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //Handles the scrolling of the map vertically.
             let cameraSpeed: CGFloat = 3.0
             if player!.position.y > self.camera!.position.y + 20 {
-                self.camera!.position = CGPointMake(self.camera!.position.x, self.camera!.position.y + cameraSpeed)
+                self.camera!.position = CGPoint(x: self.camera!.position.x, y: self.camera!.position.y + cameraSpeed)
             }
             else if player!.position.y < self.camera!.position.y - 20 {
-                self.camera!.position = CGPointMake(self.camera!.position.x, self.camera!.position.y - cameraSpeed)
+                self.camera!.position = CGPoint(x: self.camera!.position.x, y: self.camera!.position.y - cameraSpeed)
             }
             
             //Handles the scrolling of the map horizontally.
             if player!.position.x - xCameraAdjust > self.camera!.position.x + 280  {
-                self.camera!.position = CGPointMake(self.camera!.position.x + cameraSpeed, self.camera!.position.y)
+                self.camera!.position = CGPoint(x: self.camera!.position.x + cameraSpeed, y: self.camera!.position.y)
             } //account for camera adjust
             else if player!.position.x - xCameraAdjust < self.camera!.position.x + 200 {
-                self.camera!.position = CGPointMake(self.camera!.position.x - cameraSpeed, self.camera!.position.y)
+                self.camera!.position = CGPoint(x: self.camera!.position.x - cameraSpeed, y: self.camera!.position.y)
             }
             
             InputManager.instance.update()
@@ -250,7 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func didBeginContact(contact: SKPhysicsContact) {
+    func didBegin(_ contact: SKPhysicsContact) {
         if let firstNode = contact.bodyA.node as? SKSpriteNode{
             if let secondNode = contact.bodyB.node as? SKSpriteNode{
                 if firstNode is Player && secondNode is Enemy{
@@ -312,15 +312,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func gameOver() {
         gameEndVariables.currentTime = timerLabel!.text!
-        let transition = SKTransition.fadeWithDuration(5)
+        let transition = SKTransition.fade(withDuration: 5)
         let newScene = GameOverScene(size: ScreenHelper.instance.sceneCoordinateSize)
-        newScene.scaleMode = .AspectFill
+        newScene.scaleMode = .aspectFill
         self.scene!.view!.presentScene(newScene, transition: transition)
     }
     
     func gameOverColorize(){
-        let turnDark = SKAction.colorizeWithColor(UIColor.blackColor(), colorBlendFactor: 1, duration: 0.2)
-        self.runAction(turnDark)
+        let turnDark = SKAction.colorize(with: UIColor.black, colorBlendFactor: 1, duration: 0.2)
+        self.run(turnDark)
     }
     
     struct gameEndVariables {

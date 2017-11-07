@@ -24,24 +24,25 @@ class Sounds{
     let bossMusic = "Assets/boss_theme"
     let bossMusicExt = "mp3"
     
-    private var backgroundSound = NSURL()
-    private var backgroundAudioPlayer : AVAudioPlayer!
     
-    func setBackgroundMusic(musicPath: String, ofType: String)
+    
+    func setBackgroundMusic(_ musicPath: String, ofType: String)
     {
-        backgroundSound = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource(musicPath, ofType: ofType)!)
+        let backgroundSound = URL(fileURLWithPath: Bundle.main.path(forResource: musicPath, ofType: ofType)!)
+        var backgroundAudioPlayer : AVAudioPlayer?
+        
         do {
-            backgroundAudioPlayer = try AVAudioPlayer(contentsOfURL: backgroundSound)
+            backgroundAudioPlayer = try AVAudioPlayer(contentsOf: backgroundSound)
         }
         catch
         {
             backgroundAudioPlayer = nil
         }
-        backgroundAudioPlayer.numberOfLoops = -1
-        backgroundAudioPlayer.volume = 0.3
-        backgroundAudioPlayer.prepareToPlay()
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), {
-            self.backgroundAudioPlayer.play()
+        backgroundAudioPlayer!.numberOfLoops = -1
+        backgroundAudioPlayer!.volume = 0.3
+        backgroundAudioPlayer!.prepareToPlay()
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: {
+            backgroundAudioPlayer!.play()
         })
     }
     
@@ -52,24 +53,23 @@ class Sounds{
     let zombieDeathSound = "Assets/zombieDeathSoundQuestionMark"
     let zombieDeathSoundExt = "mp3"
     
-    private var tempSound = NSURL()
-    private var tempAudioPlayer : AVAudioPlayer!
-    
-    func playTempSound(soundPath: String, ofType: String)
+    func playTempSound(_ soundPath: String, ofType: String)
     {
-        tempSound = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource(soundPath, ofType: ofType)!)
+        let tempSound = URL(fileURLWithPath: Bundle.main.path(forResource: soundPath, ofType: ofType)!)
+        var tempAudioPlayer : AVAudioPlayer?
+        
         do {
-            tempAudioPlayer = try AVAudioPlayer(contentsOfURL: tempSound)
+            tempAudioPlayer = try AVAudioPlayer(contentsOf: tempSound)
         }
         catch
         {
             tempAudioPlayer = nil
         }
-        
-        if tempAudioPlayer != nil && !tempAudioPlayer.playing{
-            tempAudioPlayer.prepareToPlay()
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), {
-                self.tempAudioPlayer.play()
+        print(tempAudioPlayer)
+        if tempAudioPlayer != nil && !tempAudioPlayer!.isPlaying{
+            tempAudioPlayer!.prepareToPlay()
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: {
+                tempAudioPlayer!.play()
             })
         }
         

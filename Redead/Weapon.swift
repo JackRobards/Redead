@@ -14,12 +14,12 @@ class Weapon: SKSpriteNode{
     var attacking = false
     
     init(theTexture: SKTexture, size: CGSize) {
-        super.init(texture: theTexture, color: UIColor.clearColor(), size: size)
+        super.init(texture: theTexture, color: UIColor.clear, size: size)
     }
     
     func setUpPhysics(){
         
-        self.physicsBody = SKPhysicsBody(rectangleOfSize: physicsSize)
+        self.physicsBody = SKPhysicsBody(rectangleOf: physicsSize)
         
         self.physicsBody!.collisionBitMask = 0
         self.physicsBody!.categoryBitMask = 2
@@ -34,11 +34,11 @@ class Weapon: SKSpriteNode{
         super.init(coder: aDecoder)
     }
     
-    func update(delta: CFTimeInterval){
+    func update(_ delta: CFTimeInterval){
         
     }
     
-    func attack(direction: DirectionalPad.Direction){
+    func attack(_ direction: DirectionalPad.Direction){
     
     }
     

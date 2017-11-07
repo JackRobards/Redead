@@ -32,7 +32,7 @@ class Spell: Weapon{
         self.physicsSize = weaponSize
         self.anchorPoint = CGPoint(x: 0.5,y: 0.5)
         self.zPosition = 0.1
-        hidden = true
+        isHidden = true
         
     }
     
@@ -40,16 +40,16 @@ class Spell: Weapon{
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func attack(direction: DirectionalPad.Direction) {
+    override func attack(_ direction: DirectionalPad.Direction) {
         setUpPhysics()
         timer = 0.0
-        self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(spellTextures, timePerFrame: 0.1, resize: true, restore: false)), withKey: "attackAnimation")
+        self.run(SKAction.repeatForever(SKAction.animate(with: spellTextures, timePerFrame: 0.1, resize: true, restore: false)), withKey: "attackAnimation")
         attacking = true
-        hidden = false
+        isHidden = false
         switch direction {
-        case .Down:
+        case .down:
             directionVector = CGVector(dx: 0, dy: -1)
-        case .Up:
+        case .up:
             directionVector = CGVector(dx: 0, dy: 1)
         default:
             directionVector = CGVector(dx: 1, dy: 0)
@@ -59,12 +59,12 @@ class Spell: Weapon{
     
     override func onEnemyHit() {
         attacking = false
-        hidden = true
+        isHidden = true
         removePhysics()
-        self.removeActionForKey("attackAnimation")
+        self.removeAction(forKey: "attackAnimation")
     }
     
-    override func update(delta: CFTimeInterval){
+    override func update(_ delta: CFTimeInterval){
         if attacking{
             if timer < duration{
                 position.x += directionVector.dx * moveSpeed * CGFloat(delta)
@@ -72,9 +72,9 @@ class Spell: Weapon{
                 timer += delta
             }else{
                 attacking = false
-                hidden = true
+                isHidden = true
                 removePhysics()
-                self.removeActionForKey("attackAnimation")
+                self.removeAction(forKey: "attackAnimation")
                 
             }
 

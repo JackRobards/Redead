@@ -9,13 +9,13 @@
 import SpriteKit
 
 enum Difficulty{
-    case Boss, Hard, Medium, Easy
+    case boss, hard, medium, easy
 }
 
 class Enemy: SKSpriteNode {
     var health = 2
-    var directionFacing = Direction.None
-    var previousDirectionalInput = Direction.None
+    var directionFacing = Direction.none
+    var previousDirectionalInput = Direction.none
     var moveSpeed: CGFloat = 100.0
     var walkLeftTexture = [SKTexture]()
     var attackTexture = [SKTexture]()
@@ -43,11 +43,11 @@ class Enemy: SKSpriteNode {
     var rightBound: CGFloat = 0.0
     
     enum Direction {
-        case None, UpLeft, UpRight, DownLeft, DownRight, Up, Down, Left, Right
+        case none, upLeft, upRight, downLeft, downRight, up, down, left, right
     }
     
     init(level: Difficulty, thePlayer: Player) {
-        if (level != .Boss) {
+        if (level != .boss) {
             walkLeftTexture.append(SKTexture(imageNamed: "Assets/CuteZombieSprite/walk/go_1.png"))
             walkLeftTexture.append(SKTexture(imageNamed: "Assets/CuteZombieSprite/walk/go_2.png"))
             walkLeftTexture.append(SKTexture(imageNamed: "Assets/CuteZombieSprite/walk/go_3.png"))
@@ -148,13 +148,13 @@ class Enemy: SKSpriteNode {
             idleTexture.append(SKTexture(imageNamed: "Assets/Boss/idle8.png"))
             idleTexture.append(SKTexture(imageNamed: "Assets/Boss/idle9.png"))
         }
-        let enemySize = CGSizeMake(walkLeftTexture[1].size().width, walkLeftTexture[1].size().height)
+        let enemySize = CGSize(width: walkLeftTexture[1].size().width, height: walkLeftTexture[1].size().height)
         
         
         player = thePlayer
         difficulty = level
         
-        super.init(texture: appearTexture[0], color: UIColor.clearColor(), size: enemySize)
+        super.init(texture: appearTexture[0], color: UIColor.clear, size: enemySize)
         
         upperBound = self.position.y + self.size.height/2 - 10
         lowerBound = self.position.y - self.size.height/2 + 10
@@ -165,15 +165,15 @@ class Enemy: SKSpriteNode {
 
         
         switch level {
-        case .Boss:
+        case .boss:
             health = 6
             moveSpeed = 225.0
-        case .Hard:
+        case .hard:
             health = 4
             moveSpeed = 150.0
-        case .Medium:
+        case .medium:
             moveSpeed = 125.0
-        case .Easy:
+        case .easy:
             moveSpeed = 85.0
         }
     }
@@ -181,7 +181,7 @@ class Enemy: SKSpriteNode {
     func setUpPhysics(){
         let physicsRectSize = CGSize(width: size.width*2/3, height: size.height*2/3)
         
-        self.physicsBody = SKPhysicsBody(rectangleOfSize: physicsRectSize)
+        self.physicsBody = SKPhysicsBody(rectangleOf: physicsRectSize)
         self.physicsBody!.collisionBitMask = 0
         self.physicsBody!.categoryBitMask = 4
         self.physicsBody!.contactTestBitMask = 1 | 2
@@ -195,7 +195,7 @@ class Enemy: SKSpriteNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func takeDamage(weapon: Weapon) {
+    func takeDamage(_ weapon: Weapon) {
         if health > 0 {
             health -= 1
             flash()
@@ -204,9 +204,9 @@ class Enemy: SKSpriteNode {
             
             if health == 0 {
                 dead = true
-                self.removeActionForKey("moveAnimation")
-                self.runAction(SKAction.animateWithTextures(deathTexture, timePerFrame: animationFrameTime*1.2, resize: true, restore: false), completion: {
-                    if self.difficulty == .Boss {
+                self.removeAction(forKey: "moveAnimation")
+                self.run(SKAction.animate(with: deathTexture, timePerFrame: animationFrameTime*1.2, resize: true, restore: false), completion: {
+                    if self.difficulty == .boss {
                         GameScene.gameEndVariables.victory = true
                     }
                     self.removeFromParent()
@@ -227,12 +227,12 @@ class Enemy: SKSpriteNode {
     }
     
     func flash(){
-        let turnRedColor = SKAction.colorizeWithColor(UIColor.redColor(), colorBlendFactor: 1, duration: 0.2)
-        let turnNormalColor = SKAction.colorizeWithColor(UIColor.clearColor(), colorBlendFactor: 0, duration: 0.2)
-        self.runAction(turnRedColor, completion: {
-            self.runAction(turnNormalColor, completion: {
-                self.runAction(turnRedColor, completion: {
-                    self.runAction(turnNormalColor)
+        let turnRedColor = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1, duration: 0.2)
+        let turnNormalColor = SKAction.colorize(with: UIColor.clear, colorBlendFactor: 0, duration: 0.2)
+        self.run(turnRedColor, completion: {
+            self.run(turnNormalColor, completion: {
+                self.run(turnRedColor, completion: {
+                    self.run(turnNormalColor)
                 })
             })
             
@@ -240,7 +240,7 @@ class Enemy: SKSpriteNode {
     }
 
     
-    func move(xMove: CGFloat, yMove: CGFloat) {
+    func move(_ xMove: CGFloat, yMove: CGFloat) {
         var x = xMove
         var y = yMove
         //Checks the wall boundaries
@@ -257,14 +257,14 @@ class Enemy: SKSpriteNode {
             
             
             //Checks the player bounds
-            gidTopRightX = layer.tileGidAt(CGPointMake(rightBound + x, upperBound))
-            gidTopLeftX = layer.tileGidAt(CGPointMake(leftBound + x, upperBound))
-            gidBottomRightX = layer.tileGidAt(CGPointMake(rightBound + x, lowerBound))
-            gidBottomLeftX = layer.tileGidAt(CGPointMake(leftBound + x, lowerBound))
-            gidTopRightY = layer.tileGidAt(CGPointMake(rightBound, upperBound + y))
-            gidTopLeftY = layer.tileGidAt(CGPointMake(leftBound, upperBound + y))
-            gidBottomRightY = layer.tileGidAt(CGPointMake(rightBound, lowerBound + y))
-            gidBottomLeftY = layer.tileGidAt(CGPointMake(leftBound, lowerBound + y))
+            gidTopRightX = (layer?.tileGid(at: CGPoint(x: rightBound + x, y: upperBound)))!
+            gidTopLeftX = (layer?.tileGid(at: CGPoint(x: leftBound + x, y: upperBound)))!
+            gidBottomRightX = (layer?.tileGid(at: CGPoint(x: rightBound + x, y: lowerBound)))!
+            gidBottomLeftX = (layer?.tileGid(at: CGPoint(x: leftBound + x, y: lowerBound)))!
+            gidTopRightY = (layer?.tileGid(at: CGPoint(x: rightBound, y: upperBound + y)))!
+            gidTopLeftY = (layer?.tileGid(at: CGPoint(x: leftBound, y: upperBound + y)))!
+            gidBottomRightY = (layer?.tileGid(at: CGPoint(x: rightBound, y: lowerBound + y)))!
+            gidBottomLeftY = (layer?.tileGid(at: CGPoint(x: leftBound, y: lowerBound + y)))!
             
             
             //Checks if the tile the player is moving to is part of the movableMap
@@ -293,15 +293,15 @@ class Enemy: SKSpriteNode {
             diagnolDistance = 0.5
         }
         switch directionFacing{
-            case .None: return CGVector(dx: 0,dy: 0)
-            case .Up: return CGVector(dx: 0, dy: 1)
-            case .Down: return CGVector(dx: 0, dy: -1)
-            case .Left: return CGVector(dx: -1, dy: 0)
-            case .Right: return CGVector(dx: 1, dy: 0)
-            case .UpRight: return CGVector(dx: diagnolDistance,dy: diagnolDistance)
-            case .DownLeft: return CGVector(dx: -diagnolDistance, dy: -diagnolDistance)
-            case .UpLeft: return CGVector(dx: -diagnolDistance, dy: diagnolDistance)
-            case .DownRight: return CGVector(dx: diagnolDistance, dy: -diagnolDistance)
+            case .none: return CGVector(dx: 0,dy: 0)
+            case .up: return CGVector(dx: 0, dy: 1)
+            case .down: return CGVector(dx: 0, dy: -1)
+            case .left: return CGVector(dx: -1, dy: 0)
+            case .right: return CGVector(dx: 1, dy: 0)
+            case .upRight: return CGVector(dx: diagnolDistance,dy: diagnolDistance)
+            case .downLeft: return CGVector(dx: -diagnolDistance, dy: -diagnolDistance)
+            case .upLeft: return CGVector(dx: -diagnolDistance, dy: diagnolDistance)
+            case .downRight: return CGVector(dx: diagnolDistance, dy: -diagnolDistance)
         }
     }
     
@@ -309,7 +309,7 @@ class Enemy: SKSpriteNode {
     
     func attack() {
         attacking = true
-        self.runAction(SKAction.animateWithTextures(attackTexture, timePerFrame: animationFrameTime, resize: true, restore: false), completion: {
+        self.run(SKAction.animate(with: attackTexture, timePerFrame: animationFrameTime, resize: true, restore: false), completion: {
             self.attacking = false
             if (self.player.health <= 0) {
                 let scene = self.scene! as! GameScene
@@ -322,7 +322,7 @@ class Enemy: SKSpriteNode {
         return sqrt(pow(player.position.x - self.position.x, 2) + pow(player.position.y - self.position.y, 2))
     }
     
-    func update(delta: CFTimeInterval) {
+    func update(_ delta: CFTimeInterval) {
         if !dead{
             if isKnockedBack{
                 if knockbackTimer > 0{
@@ -339,86 +339,86 @@ class Enemy: SKSpriteNode {
             else if !attacking{
                 //400 is the distance for the enemy to appear
                 if !hasAppeared && distanceFromPlayer() <= 450 {
-                    self.runAction(SKAction.animateWithTextures(appearTexture, timePerFrame: animationFrameTime, resize: true, restore: false), completion: {
+                    self.run(SKAction.animate(with: appearTexture, timePerFrame: animationFrameTime, resize: true, restore: false), completion: {
                         if self.distanceFromPlayer() > self.distanceToNoticePlayer {
-                            self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(self.idleTexture, timePerFrame: self.animationFrameTime, resize: true, restore: false)), withKey: "idleAnimation")
+                            self.run(SKAction.repeatForever(SKAction.animate(with: self.idleTexture, timePerFrame: self.animationFrameTime, resize: true, restore: false)), withKey: "idleAnimation")
                         }
                         })
                     hasAppeared = true
                 }
                 if player.position.x <= self.position.x + 1.5 && player.position.x >= self.position.x - 1.5  && distanceFromPlayer() < distanceToNoticePlayer {
                     if player.position.y > self.position.y {
-                        directionFacing = .Up
+                        directionFacing = .up
                     }
                     else {
-                        directionFacing = .Down
+                        directionFacing = .down
                     }
                 }
                 else if player.position.y <= self.position.y + 1.5 && player.position.y >= self.position.y - 1.5 && distanceFromPlayer() < distanceToNoticePlayer {
                     if player.position.x > self.position.x {
-                        directionFacing = .Right
+                        directionFacing = .right
                     }
                     else {
-                        directionFacing = .Left
+                        directionFacing = .left
                     }
                 }
                 else if player.position.x <= self.position.x && distanceFromPlayer() < distanceToNoticePlayer && player.position.y > self.position.y {
-                    directionFacing = .UpLeft
+                    directionFacing = .upLeft
                 }
                 else if player.position.x <= self.position.x && distanceFromPlayer() < distanceToNoticePlayer && player.position.y <= self.position.y {
-                    directionFacing = .DownLeft
+                    directionFacing = .downLeft
                 }
                 else if player.position.x > self.position.x && distanceFromPlayer() < distanceToNoticePlayer && player.position.y > self.position.y {
-                    directionFacing = .UpRight
+                    directionFacing = .upRight
                 }
                 else if player.position.x > self.position.x && distanceFromPlayer() < distanceToNoticePlayer && player.position.y <= self.position.y {
-                    directionFacing = .DownRight
+                    directionFacing = .downRight
                 }
                 else {
-                    directionFacing = .None
+                    directionFacing = .none
                 }
                 let directionVector = getDirectionVector()
                 
                 
-                if directionFacing != .None{
+                if directionFacing != .none{
                     let x: CGFloat = directionVector.dx * moveSpeed * CGFloat(delta)
                     let y: CGFloat = directionVector.dy * moveSpeed * CGFloat(delta)
                     //Checks the map bounds and moves
                     move(x, yMove: y)
                     
                     
-                    if (previousDirectionalInput == .None) {
-                        self.removeActionForKey("idleAnimation")
+                    if (previousDirectionalInput == .none) {
+                        self.removeAction(forKey: "idleAnimation")
                     }
                     
                     if previousDirectionalInput != directionFacing {
-                        if directionFacing == .UpRight || directionFacing == .DownRight || directionFacing == .Right || directionFacing == .Down {
-                            if (difficulty == .Boss) {
+                        if directionFacing == .upRight || directionFacing == .downRight || directionFacing == .right || directionFacing == .down {
+                            if (difficulty == .boss) {
                                 xScale = 1
                             }
                             else {
                                 xScale = -1
                             }
-                            self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(walkLeftTexture, timePerFrame: animationFrameTime, resize: true, restore: false)), withKey: "moveAnimation")
+                            self.run(SKAction.repeatForever(SKAction.animate(with: walkLeftTexture, timePerFrame: animationFrameTime, resize: true, restore: false)), withKey: "moveAnimation")
                         }
-                        else if directionFacing == .UpLeft || directionFacing == .DownLeft || directionFacing == .Left || directionFacing == .Up {
-                            if (difficulty == .Boss) {
+                        else if directionFacing == .upLeft || directionFacing == .downLeft || directionFacing == .left || directionFacing == .up {
+                            if (difficulty == .boss) {
                                 xScale = -1
                             }
                             else {
                                 xScale = 1
                             }
-                            self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(walkLeftTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
+                            self.run(SKAction.repeatForever(SKAction.animate(with: walkLeftTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
                         }
                     }
                     previousDirectionalInput = directionFacing
                 }
                 else{
-                    self.removeActionForKey("moveAnimation")
-                    if (previousDirectionalInput != .None) {
-                        self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(idleTexture, timePerFrame: animationFrameTime, resize: true, restore: false)), withKey: "idleAnimation")
+                    self.removeAction(forKey: "moveAnimation")
+                    if (previousDirectionalInput != .none) {
+                        self.run(SKAction.repeatForever(SKAction.animate(with: idleTexture, timePerFrame: animationFrameTime, resize: true, restore: false)), withKey: "idleAnimation")
                     }
-                    previousDirectionalInput = .None
+                    previousDirectionalInput = .none
                     
                 }
                 

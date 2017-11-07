@@ -15,7 +15,7 @@ class GameOverScene: SKScene {
     let y = ScreenHelper.instance.visibleScreen.origin.y
 
     
-    override func didMoveToView(view: SKView) {
+    override func didMove(to view: SKView) {
         addTextToScreen()
         addButtonsToScene()
     }
@@ -23,13 +23,13 @@ class GameOverScene: SKScene {
     func addTextToScreen() {
         let time = GameScene.gameEndVariables.currentTime
         
-        let defaults = NSUserDefaults.standardUserDefaults()
-        let oldHighScore = defaults.objectForKey("HighScore")
+        let defaults = UserDefaults.standard
+        let oldHighScore = defaults.object(forKey: "HighScore")
         var isANewHighScore: Bool?
         
         if oldHighScore == nil {
             if (GameScene.gameEndVariables.victory) {
-                defaults.setObject(time, forKey: "HighScore")
+                defaults.set(time, forKey: "HighScore")
                 isANewHighScore = true
             }
             else {
@@ -39,7 +39,7 @@ class GameOverScene: SKScene {
         else {
             if let stringOldScore = oldHighScore as? String {
                 if stringOldScore >= time {
-                    defaults.setObject(time, forKey: "HighScore")
+                    defaults.set(time, forKey: "HighScore")
                     isANewHighScore = true
                 }
                 isANewHighScore = false
@@ -49,38 +49,38 @@ class GameOverScene: SKScene {
             }
         }
         let gameOverLabel = SKLabelNode()
-        gameOverLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)+screenHeight/8)
+        gameOverLabel.position = CGPoint(x: self.frame.midX, y: self.frame.midY+screenHeight/8)
         gameOverLabel.fontSize = 60
         gameOverLabel.fontName = "Zapfino"
         
         if GameScene.gameEndVariables.victory {
             gameOverLabel.text = "A+!"
             
-            gameOverLabel.fontColor = SKColor.greenColor()
+            gameOverLabel.fontColor = SKColor.green
             
             
             let highScoreLabel = SKLabelNode()
             
             
             if !isANewHighScore! {
-                let labelText = "High Score: \(defaults.objectForKey("HighScore")! as! String)"
+                let labelText = "High Score: \(defaults.object(forKey: "HighScore")! as! String)"
                 highScoreLabel.text = labelText
-                highScoreLabel.fontColor = SKColor.brownColor()
+                highScoreLabel.fontColor = SKColor.brown
             }
             else {
-                let labelText = "NEW HIGH SCORE: \(defaults.objectForKey("HighScore")! as! String)"
+                let labelText = "NEW HIGH SCORE: \(defaults.object(forKey: "HighScore")! as! String)"
                 highScoreLabel.text = labelText
-                highScoreLabel.fontColor = SKColor.magentaColor()
+                highScoreLabel.fontColor = SKColor.magenta
             }
             highScoreLabel.fontSize = 30
             highScoreLabel.fontName = "Zapfino"
-            highScoreLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame) - screenHeight/4)
+            highScoreLabel.position = CGPoint(x: self.frame.midX, y: self.frame.midY - screenHeight/4)
             self.addChild(highScoreLabel)
 
         }
         else {
             gameOverLabel.text = "Game Over!"
-            gameOverLabel.fontColor = SKColor.redColor()
+            gameOverLabel.fontColor = SKColor.red
         }
         
         self.addChild(gameOverLabel)
@@ -96,24 +96,24 @@ class GameOverScene: SKScene {
         
         let zButton = SgButton(normalImageNamed: "Assets/buttonStock.png", highlightedImageNamed: "Assets/buttonStockPressed.png", buttonFunc: tappedPlayAgainButton)
         zButton.size = buttonSize
-        zButton.position = CGPointMake(x + screenWidth / 2, y + screenHeight / 2)
+        zButton.position = CGPoint(x: x + screenWidth / 2, y: y + screenHeight / 2)
         
         self.addChild(zButton)
         let label = SKLabelNode(text: "Restart Redead")
         label.fontName = "AmericanTypewriter-Bold"
-        label.fontColor = UIColor.yellowColor()
+        label.fontColor = UIColor.yellow
         label.zPosition = 0.1
         zButton.addChild(label)
     }
 
     
-    func tappedPlayAgainButton(button: SgButton){
+    func tappedPlayAgainButton(_ button: SgButton){
         let newScene = GameScene(size: ScreenHelper.instance.sceneCoordinateSize)
-        newScene.scaleMode = .AspectFill
+        newScene.scaleMode = .aspectFill
         self.scene!.view!.presentScene(newScene)
     }
     
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
     }
 }

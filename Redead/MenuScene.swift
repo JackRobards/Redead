@@ -11,7 +11,7 @@ import SpriteKit
 
 class MenuScene: SKScene {
     
-    override func didMoveToView(view: SKView) {
+    override func didMove(to view: SKView) {
         addButtonsToScene()
         addScoreToScene()
     }
@@ -26,14 +26,14 @@ class MenuScene: SKScene {
         
         let zButton = SgButton(normalImageNamed: "Assets/buttonStock.png", highlightedImageNamed: "Assets/buttonStockPressed.png", buttonFunc: tappedStartButton)
         zButton.size = buttonSize
-        zButton.position = CGPointMake(x + screenWidth / 2, y + screenHeight / 2)
+        zButton.position = CGPoint(x: x + screenWidth / 2, y: y + screenHeight / 2)
         
         
         
         self.addChild(zButton)
         let label = SKLabelNode(text: "Start Redead")
         label.fontName = "AmericanTypewriter-Bold"
-        label.fontColor = UIColor.yellowColor()
+        label.fontColor = UIColor.yellow
         label.zPosition = 0.1
         zButton.addChild(label)
     }
@@ -41,32 +41,32 @@ class MenuScene: SKScene {
     func addScoreToScene() {
         
         
-        let defaults = NSUserDefaults()
+        let defaults = UserDefaults()
         
-        if defaults.objectForKey("HighScore") != nil {
-            let labelText = "High Score: \(defaults.objectForKey("HighScore")! as! String)"
+        if defaults.object(forKey: "HighScore") != nil {
+            let labelText = "High Score: \(defaults.object(forKey: "HighScore")! as! String)"
             let highScoreLabel = SKLabelNode()
             highScoreLabel.text = labelText
-            highScoreLabel.fontColor = SKColor.brownColor()
+            highScoreLabel.fontColor = SKColor.brown
         
             highScoreLabel.fontSize = 30
             highScoreLabel.fontName = "Zapfino"
             let screenHeight = ScreenHelper.instance.visibleScreen.height
-            highScoreLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame) - screenHeight/4)
+            highScoreLabel.position = CGPoint(x: self.frame.midX, y: self.frame.midY - screenHeight/4)
             self.addChild(highScoreLabel)
         }
 
     }
     
-    func tappedStartButton(button: SgButton){
+    func tappedStartButton(_ button: SgButton){
         let newScene = GameScene(size: ScreenHelper.instance.sceneCoordinateSize)
-        newScene.scaleMode = .AspectFill
+        newScene.scaleMode = .aspectFill
         self.scene!.view!.presentScene(newScene)
         
         
     }
     
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
     }
 }

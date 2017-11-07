@@ -12,7 +12,7 @@ class DirectionalPad: SKSpriteNode{
     let diagonal = 0.71
     
     enum Direction {
-        case None, Up, Down, Left, Right, UpLeft, UpRight, DownLeft, DownRight
+        case none, up, down, left, right, upLeft, upRight, downLeft, downRight
     }
     
     struct DirectionZone{
@@ -20,60 +20,60 @@ class DirectionalPad: SKSpriteNode{
         var zone: CGRect
     }
     
-    var direction = Direction.None
+    var direction = Direction.none
     var zones = [DirectionZone]()
     
     
     init(imageName: String, size: CGSize) {
         let texture = SKTexture(imageNamed: imageName)
-        super.init(texture: texture, color: UIColor.clearColor(), size: size)
+        super.init(texture: texture, color: UIColor.clear, size: size)
         
         setUpZones()
-        userInteractionEnabled = true
+        isUserInteractionEnabled = true
     }
     
     func getDirectionVector() -> (CGVector){
         switch direction{
-        case .None: return CGVector(dx: 0,dy: 0)
-        case .Up: return CGVector(dx: 0,dy: 1)
-        case .Down: return CGVector(dx: 0, dy: -1)
-        case .Left: return CGVector(dx: -1, dy: 0)
-        case .Right: return CGVector(dx: 1, dy: 0)
-        case .UpLeft: return CGVector(dx: -diagonal, dy: diagonal)
-        case .UpRight: return CGVector(dx: diagonal, dy: diagonal)
-        case .DownLeft: return CGVector(dx: -diagonal, dy: -diagonal)
-        case .DownRight: return CGVector(dx: diagonal, dy: -diagonal)
+        case .none: return CGVector(dx: 0,dy: 0)
+        case .up: return CGVector(dx: 0,dy: 1)
+        case .down: return CGVector(dx: 0, dy: -1)
+        case .left: return CGVector(dx: -1, dy: 0)
+        case .right: return CGVector(dx: 1, dy: 0)
+        case .upLeft: return CGVector(dx: -diagonal, dy: diagonal)
+        case .upRight: return CGVector(dx: diagonal, dy: diagonal)
+        case .downLeft: return CGVector(dx: -diagonal, dy: -diagonal)
+        case .downRight: return CGVector(dx: diagonal, dy: -diagonal)
         }
     }
     
-    private func setUpZones(){
+    fileprivate func setUpZones(){
         let zoneSize = CGSize(width: size.width/3.0, height: size.height/3.0)
         
-        var zoneOrigin = CGPointMake(-zoneSize.width * 1.5, zoneSize.height * 0.5)
+        var zoneOrigin = CGPoint(x: -zoneSize.width * 1.5, y: zoneSize.height * 0.5)
         //zones.append(DirectionZone(direction: .UpLeft, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(-zoneSize.width * 0.5, zoneSize.height * 0.5)
-        zones.append(DirectionZone(direction: .Up, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
+        zoneOrigin = CGPoint(x: -zoneSize.width * 0.5, y: zoneSize.height * 0.5)
+        zones.append(DirectionZone(direction: .up, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(zoneSize.width * 0.5 , zoneSize.height * 0.5)
+        zoneOrigin = CGPoint(x: zoneSize.width * 0.5 , y: zoneSize.height * 0.5)
         //zones.append(DirectionZone(direction: .UpRight, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(-zoneSize.width * 1.5, -zoneSize.height * 0.5)
-        zones.append(DirectionZone(direction: .Left, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
+        zoneOrigin = CGPoint(x: -zoneSize.width * 1.5, y: -zoneSize.height * 0.5)
+        zones.append(DirectionZone(direction: .left, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(-zoneSize.width * 0.5, -zoneSize.height * 0.5)
-        zones.append(DirectionZone(direction: .None, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
+        zoneOrigin = CGPoint(x: -zoneSize.width * 0.5, y: -zoneSize.height * 0.5)
+        zones.append(DirectionZone(direction: .none, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(zoneSize.width * 0.5, -zoneSize.height * 0.5)
-        zones.append(DirectionZone(direction: .Right, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
+        zoneOrigin = CGPoint(x: zoneSize.width * 0.5, y: -zoneSize.height * 0.5)
+        zones.append(DirectionZone(direction: .right, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(-zoneSize.width * 1.5, -zoneSize.height * 1.5)
+        zoneOrigin = CGPoint(x: -zoneSize.width * 1.5, y: -zoneSize.height * 1.5)
         //zones.append(DirectionZone(direction: .DownLeft, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(-zoneSize.width * 0.5, -zoneSize.height * 1.5)
-        zones.append(DirectionZone(direction: .Down, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
+        zoneOrigin = CGPoint(x: -zoneSize.width * 0.5, y: -zoneSize.height * 1.5)
+        zones.append(DirectionZone(direction: .down, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
         
-        zoneOrigin = CGPointMake(zoneSize.width * 0.5, -zoneSize.height * 1.5)
+        zoneOrigin = CGPoint(x: zoneSize.width * 0.5, y: -zoneSize.height * 1.5)
         //zones.append(DirectionZone(direction: .DownRight, zone: CGRect(origin: zoneOrigin, size: zoneSize)))
 
     }
@@ -82,12 +82,12 @@ class DirectionalPad: SKSpriteNode{
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             
-            let location = touch.locationInNode(self)
+            let location = touch.location(in: self)
             
-            direction = .None
+            direction = .none
             for z in zones{
                 if z.zone.contains(location){
                     direction = z.direction
@@ -98,12 +98,12 @@ class DirectionalPad: SKSpriteNode{
 
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             
-            let location = touch.locationInNode(self)
+            let location = touch.location(in: self)
             
-            direction = .None
+            direction = .none
             for z in zones{
                 if z.zone.contains(location){
                     direction = z.direction
@@ -113,12 +113,12 @@ class DirectionalPad: SKSpriteNode{
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-       direction = .None
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+       direction = .none
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        direction = .None
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        direction = .none
     }
 
     

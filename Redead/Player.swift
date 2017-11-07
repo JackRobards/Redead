@@ -10,8 +10,8 @@ import SpriteKit
 class Player: SKSpriteNode{
     var playerSize = CGSize()
     var health = 3
-    var directionFacing = DirectionalPad.Direction.Down
-    var previousDirectionalInput = DirectionalPad.Direction.None
+    var directionFacing = DirectionalPad.Direction.down
+    var previousDirectionalInput = DirectionalPad.Direction.none
     var heartsArray: [SKSpriteNode] = [SKSpriteNode]()
     var moveSpeed: CGFloat = 150.0
     var sword = Sword()
@@ -57,7 +57,7 @@ class Player: SKSpriteNode{
         heartsArray.append(SKSpriteNode(imageNamed: "Assets/heart.png"))
 
         playerSize = walkDownTexture[1].size()
-        super.init(texture: walkDownTexture[1], color: UIColor.clearColor(), size: walkDownTexture[1].size())
+        super.init(texture: walkDownTexture[1], color: UIColor.clear, size: walkDownTexture[1].size())
         sword.position = self.position
         projectile.position = self.position
         self.addChild(projectile)
@@ -74,7 +74,7 @@ class Player: SKSpriteNode{
     func setUpPhysics(){
         let physicsRectSize = CGSize(width: playerSize.width*2/3, height: playerSize.height*2/3)
         
-        self.physicsBody = SKPhysicsBody(rectangleOfSize: physicsRectSize)
+        self.physicsBody = SKPhysicsBody(rectangleOf: physicsRectSize)
         self.physicsBody!.collisionBitMask = 0
         self.physicsBody!.categoryBitMask = 1
         self.physicsBody!.contactTestBitMask = 2
@@ -89,7 +89,7 @@ class Player: SKSpriteNode{
         //fatalError("init(coder:) has not been implemented")
     }
     
-    func move(xMove: CGFloat, yMove: CGFloat) {
+    func move(_ xMove: CGFloat, yMove: CGFloat) {
         var x = xMove
         var y = yMove
         
@@ -107,14 +107,14 @@ class Player: SKSpriteNode{
             
             
             //Checks the player bounds
-            gidTopRightX = layer.tileGidAt(CGPointMake(rightBound + x, upperBound))
-            gidTopLeftX = layer.tileGidAt(CGPointMake(leftBound + x, upperBound))
-            gidBottomRightX = layer.tileGidAt(CGPointMake(rightBound + x, lowerBound))
-            gidBottomLeftX = layer.tileGidAt(CGPointMake(leftBound + x, lowerBound))
-            gidTopRightY = layer.tileGidAt(CGPointMake(rightBound, upperBound + y))
-            gidTopLeftY = layer.tileGidAt(CGPointMake(leftBound, upperBound + y))
-            gidBottomRightY = layer.tileGidAt(CGPointMake(rightBound, lowerBound + y))
-            gidBottomLeftY = layer.tileGidAt(CGPointMake(leftBound, lowerBound + y))
+            gidTopRightX = (layer?.tileGid(at: CGPoint(x: rightBound + x, y: upperBound)))!
+            gidTopLeftX = (layer?.tileGid(at: CGPoint(x: leftBound + x, y: upperBound)))!
+            gidBottomRightX = (layer?.tileGid(at: CGPoint(x: rightBound + x, y: lowerBound)))!
+            gidBottomLeftX = (layer?.tileGid(at: CGPoint(x: leftBound + x, y: lowerBound)))!
+            gidTopRightY = (layer?.tileGid(at: CGPoint(x: rightBound, y: upperBound + y)))!
+            gidTopLeftY = (layer?.tileGid(at: CGPoint(x: leftBound, y: upperBound + y)))!
+            gidBottomRightY = (layer?.tileGid(at: CGPoint(x: rightBound, y: lowerBound + y)))!
+            gidBottomLeftY = (layer?.tileGid(at: CGPoint(x: leftBound, y: lowerBound + y)))!
             
             
             //Checks if the tile the player is moving to is part of the movableMap
@@ -135,7 +135,7 @@ class Player: SKSpriteNode{
         leftBound = self.position.x - playerSize.width/3
     }
     
-    func update(delta: CFTimeInterval){
+    func update(_ delta: CFTimeInterval){
         let direction = InputManager.instance.getDpadDirection()
         let directionVector = InputManager.instance.getDpadDirectionVector()
         
@@ -159,7 +159,7 @@ class Player: SKSpriteNode{
                 isKnockedBack = false
             }
         }else{
-            if !sword.attacking && !projectile.attacking && direction != .None{
+            if !sword.attacking && !projectile.attacking && direction != .none{
                 let x: CGFloat = directionVector.dx * moveSpeed * CGFloat(delta)
                 let y: CGFloat = directionVector.dy * moveSpeed * CGFloat(delta)
                 
@@ -167,19 +167,19 @@ class Player: SKSpriteNode{
                 directionFacing = direction
                 
                 if previousDirectionalInput != direction{
-                    if direction == .Right{
+                    if direction == .right{
                         xScale = 1
-                        self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(walkRightTexture, timePerFrame: animationFrameTime, resize: true, restore: false)), withKey: "moveAnimation")
+                        self.run(SKAction.repeatForever(SKAction.animate(with: walkRightTexture, timePerFrame: animationFrameTime, resize: true, restore: false)), withKey: "moveAnimation")
                     }
-                    else if direction == .Left{
+                    else if direction == .left{
                         xScale = -1
-                        self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(walkRightTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
+                        self.run(SKAction.repeatForever(SKAction.animate(with: walkRightTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
                     }
-                    else if direction == .Up{
-                        self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(walkUpTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
+                    else if direction == .up{
+                        self.run(SKAction.repeatForever(SKAction.animate(with: walkUpTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
                     }
-                    else if direction == .Down{
-                        self.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(walkDownTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
+                    else if direction == .down{
+                        self.run(SKAction.repeatForever(SKAction.animate(with: walkDownTexture, timePerFrame: animationFrameTime,resize: true, restore: false)), withKey: "moveAnimation")
                     }
                 }
                 
@@ -206,10 +206,10 @@ class Player: SKSpriteNode{
         if !projectile.attacking && !sword.attacking && spellCount > 0{
             spellCount -= 1
             switch directionFacing {
-            case .Down: projectile.position = CGPointMake(0, -playerSize.height/3)
-            case .Left: projectile.position = CGPointMake(playerSize.width/3, 0)
-            case .Right: projectile.position = CGPointMake(playerSize.width/3, 0)
-            case .Up: projectile.position = CGPointMake(0, playerSize.height/3)
+            case .down: projectile.position = CGPoint(x: 0, y: -playerSize.height/3)
+            case .left: projectile.position = CGPoint(x: playerSize.width/3, y: 0)
+            case .right: projectile.position = CGPoint(x: playerSize.width/3, y: 0)
+            case .up: projectile.position = CGPoint(x: 0, y: playerSize.height/3)
             default: break
             }
             projectile.attack(directionFacing)
@@ -219,10 +219,10 @@ class Player: SKSpriteNode{
     func attack(){
         if !sword.attacking && !projectile.attacking{
             switch directionFacing {
-            case .Down: sword.position = CGPointMake(0, -playerSize.height/3)
-            case .Left: sword.position = CGPointMake(playerSize.width/3, 0)
-            case .Right: sword.position = CGPointMake(playerSize.width/3, 0)
-            case .Up: sword.position = CGPointMake(0, playerSize.height/3)
+            case .down: sword.position = CGPoint(x: 0, y: -playerSize.height/3)
+            case .left: sword.position = CGPoint(x: playerSize.width/3, y: 0)
+            case .right: sword.position = CGPoint(x: playerSize.width/3, y: 0)
+            case .up: sword.position = CGPoint(x: 0, y: playerSize.height/3)
             default: break
             }
             sword.attack(directionFacing)
@@ -230,11 +230,11 @@ class Player: SKSpriteNode{
     }
     
     func stopWalkingAnimation(){
-        self.removeActionForKey("moveAnimation")
-        previousDirectionalInput = .None
+        self.removeAction(forKey: "moveAnimation")
+        previousDirectionalInput = .none
     }
     
-    func takeDamage(enemy: Enemy) {
+    func takeDamage(_ enemy: Enemy) {
         if (health > 0 && !isInvinsible) {
             removePhysics()
             isKnockedBack = true
@@ -259,12 +259,12 @@ class Player: SKSpriteNode{
     }
     
     func flash(){
-        let turnRedColor = SKAction.colorizeWithColor(UIColor.redColor(), colorBlendFactor: 1, duration: 0.2)
-        let turnNormalColor = SKAction.colorizeWithColor(UIColor.clearColor(), colorBlendFactor: 0, duration: 0.2)
-        self.runAction(turnRedColor, completion: {
-            self.runAction(turnNormalColor, completion: {
-                self.runAction(turnRedColor, completion: {
-                    self.runAction(turnNormalColor)
+        let turnRedColor = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1, duration: 0.2)
+        let turnNormalColor = SKAction.colorize(with: UIColor.clear, colorBlendFactor: 0, duration: 0.2)
+        self.run(turnRedColor, completion: {
+            self.run(turnNormalColor, completion: {
+                self.run(turnRedColor, completion: {
+                    self.run(turnNormalColor)
                 })
             })
             

@@ -12,7 +12,7 @@ class TileManager{
     static let instance = TileManager()
     var tileMap: JSTileMap? = nil
     
-    func setTileMap(map: JSTileMap){
+    func setTileMap(_ map: JSTileMap){
         self.tileMap = map
     }
     
